@@ -25,21 +25,21 @@ const toCmdFont = t =>
 module.exports = {
   config: {
     name: "help",
-    aliases: ["menu"],
+    aliases: ["menu", "مساعدة", "اوامر"],
     version: "6.0",
     author: "𝐒𝐈𝐅𝐀𝐓",
-    shortDescription: "Show all available commands",
-    longDescription: "Displays a categorized command list with a rotating video (different every time).",
-    category: "system",
-    guide: "{pn}help [command name]"
+    shortDescription: "عرض جميع الأوامر المتاحة",
+    longDescription: "يعرض قائمة الأوامر مقسمة حسب التصنيفات مع فيديو متحرك يتغير في كل مرة.",
+    category: "النظام",
+    guide: "{pn}help [اسم الأمر]"
   },
 
   onStart: async function ({ message, args, prefix }) {
     const allCommands = global.GoatBot.commands;
     const categories = {};
 
-        const cleanCategoryName = (text) => {
-      if (!text) return "OTHERS";
+    const cleanCategoryName = (text) => {
+      if (!text) return "أخرى";
       return text
         .normalize("NFKD")
         .replace(/[^\w\s\u0600-\u06FF-]/g, "") // السماح بالحروف العربية ضمن النطاق Unicode
@@ -47,8 +47,6 @@ module.exports = {
         .trim()
         .toUpperCase();
     };
-
-
 
     if (!global.GoatBot.cacheHelp) {
       const cachedCategories = {};
@@ -92,53 +90,52 @@ module.exports = {
       const query = args[0].toLowerCase();
       const cmd = allCommands.get(query) || [...allCommands.values()].find(c => (c.config?.aliases || []).map(a => a.toLowerCase()).includes(query));
 
-      if (!cmd || !cmd.config) return message.reply(`❌ Command "${query}" not found.`);
+      if (!cmd || !cmd.config) return message.reply(`❌ عذراً، لم يتم العثور على الأمر "${query}".`);
 
       const { name, version, author, guide, category, longDescription, shortDescription, aliases } = cmd.config;
-      const desc = longDescription?.en || longDescription || shortDescription?.en || shortDescription || "No description";
-      const usage = (guide?.en || guide || `{pn}${name}`).replace(/{pn}/g, prefix).replace(/{name}/g, name);
+      const desc = longDescription?.ar || longDescription?.en || longDescription || shortDescription?.ar || shortDescription?.en || shortDescription || "لا يوجد وصف";
+      const usage = (guide?.ar || guide?.en || guide || `{pn}${name}`).replace(/{pn}/g, prefix).replace(/{name}/g, name);
 
       const detailMsg =
         `╭┈─────┈─ ─┈────┈╮\n` +
-        `  🌸 𝗖𝗢𝗠𝗠𝗔𝗡𝗗 𝗜𝗡𝗙𝗢 🌸\n` +
+        `  🌸 📇 معلومات الأمر 📇 🌸\n` +
         `╰┈─────┈─ ─┈────┈╯\n\n` +
-        ` 🪷 𝐍𝐚𝐦𝐞: ${toSmallCaps(name)}\n` +
-        ` 🪷 𝐂𝐚𝐭𝐞𝐠𝐨𝐫𝐲: ${toSmallCaps(category || "General")}\n` +
-        ` 🪷 𝐀𝐥𝐢𝐚𝐬𝐞𝐬: ${aliases?.length ? aliases.join(", ") : "None"}\n` +
-        ` 🪷 𝐕𝐞𝐫𝐬𝐢𝐨𝐧: ${version || "1.0"}\n` +
-        ` 🪷 𝐀𝐮𝐭𝐡𝐨𝐫: ${author || "S1FU"}\n\n` +
+        ` 🪷 ٱلاسـم: ${toSmallCaps(name)}\n` +
+        ` 🪷 ٱلتصـنيف: ${category || "عام"}\n` +
+        ` 🪷 ٱلأسماء ٱلبديلة: ${aliases?.length ? aliases.join(", ") : "لا يوجد"}\n` +
+        ` 🪷 ٱلإصـدار: ${version || "1.0"}\n` +
+        ` 🪷 ٱلمـطور: ${author || "S1FU"}\n\n` +
         ` ┌──────ʚ🍄ɞ──────┐\n` +
-        `  📖 𝐃𝐞𝐬𝐜: ${desc}\n\n` +
-        `  💡 𝐔𝐬𝐚𝐠𝐞: ${usage}\n` +
+        `  📖 ٱلوصـف: ${desc}\n\n` +
+        `  💡 طـريقة ٱلاستخدام: ${usage}\n` +
         ` └──────ʚ🍄ɞ──────┘\n\n` +
-        ` 🌸𝐒𝐭𝐚𝐲 𝐇𝐚𝐩𝐩𝐲&𝐁𝐞𝐚𝐮𝐭𝐢𝐟𝐮𝐥🌸\n` +
+        ` 🌸 طـاب يومـك بكل خـير 🌸\n` +
         `╰┈───┈──────┈───┈╯`;
 
       return message.reply({ body: detailMsg, attachment: fs.createReadStream(videoPath) });
     }
 
-
     let msg = `╭┈─────┈──┈─────┈╮\n` +
-              `       🌸 𝐁𝐎𝐓 𝐌𝐄𝐍𝐔 🌸\n` +
+              `       🌸 قـائمة الأوامر 🌸\n` +
               `╰┈─────┈──┈─────┈╯\n\n`;
 
     const sortedCategories = Object.keys(categoriesList).sort();
 
     for (const cat of sortedCategories) {
-      msg += `╭┈─┈━[🌸 ${toSmallCaps(cat)} ]\n`;
+      msg += `╭┈─┈━[🌸 ${cat} ]\n`;
       const commands = categoriesList[cat].sort();
       for (let i = 0; i < commands.length; i += 2) {
         const a = toCmdFont(commands[i]);
         const b = commands[i + 1] ? toCmdFont(commands[i + 1]) : null;
         msg += b ? `┋⌬ ${a.padEnd(12)} ⌬ ${b}\n` : `┋⌬ ${a}\n`;
       }
-      msg += `┕┈───┈──┈────┈𒐬\n\n`;
+      msg += `┕┈───┈──┈────┈┘\n\n`;
     }
 
     msg += `╭┈───────┈┈ ೄྀ࿐┐\n` +
-           ` 🍄 𝐓𝐨𝐭𝐚𝐥: ${allCommands.size - 1}\n` +
-           ` 🎀 𝐏𝐫𝐞𝐟𝐢𝐱: ${prefix}\n` +
-           ` 🌸𝐒𝐭𝐚𝐲 𝐇𝐚𝐩𝐩𝐲 & 𝐁𝐞𝐚𝐮𝐭𝐢𝐟𝐮𝐥🌸\n` +
+           ` 🍄 ٱلإجمـالي: ${allCommands.size - 1}\n` +
+           ` 🎀 ٱلـبادئة: ${prefix}\n` +
+           ` 🌸 طـاب يومـك بكل خـير 🌸\n` +
            `╰┈──────┈──────┈─┘`;
 
     return message.reply({
