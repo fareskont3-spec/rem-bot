@@ -38,15 +38,16 @@ module.exports = {
     const allCommands = global.GoatBot.commands;
     const categories = {};
 
-    const cleanCategoryName = (text) => {
+        const cleanCategoryName = (text) => {
       if (!text) return "OTHERS";
       return text
         .normalize("NFKD")
-        .replace(/[^\w\s-]/g, "")
+        .replace(/[^\w\s\u0600-\u06FF-]/g, "") // السماح بالحروف العربية ضمن النطاق Unicode
         .replace(/\s+/g, " ")
         .trim()
         .toUpperCase();
     };
+
 
 
     if (!global.GoatBot.cacheHelp) {
