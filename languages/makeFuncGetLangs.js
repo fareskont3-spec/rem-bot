@@ -4,8 +4,8 @@ const path = require("path");
 
 let pathLanguageFile = `${__dirname}/${global.GoatBot.config.language}.lang`;
 if (!fs.existsSync(pathLanguageFile)) {
-        log.warn("LANGUAGE", `Can't find language file ${global.GoatBot.config.language}.lang, using default language file "${__dirname}/en.lang"`);
-        pathLanguageFile = `${__dirname}/en.lang`;
+        log.warn("LANGUAGE", `Can't find language file ${global.GoatBot.config.language}.lang, using default language file "${__dirname}/ar.lang"`);
+        pathLanguageFile = `${__dirname}/ar.lang`;
 }
 const readLanguage = fs.readFileSync(pathLanguageFile, "utf-8");
 const languageData = readLanguage
@@ -37,8 +37,8 @@ function getText(head, key, ...args) {
                 let pathLanguageFile = path.normalize(`${__dirname}/${head.lang}.lang`);
                 head = head.head;
                 if (!fs.existsSync(pathLanguageFile)) {
-                        log.warn("LANGUAGE", `Can't find language file ${pathLanguageFile}, using default language file "${path.normalize(`${__dirname}/en.lang`)}"`);
-                        pathLanguageFile = `${__dirname}/en.lang`;
+                        log.warn("LANGUAGE", `Can't find language file ${pathLanguageFile}, using default language file "${path.normalize(`${__dirname}/ar.lang`)}"`);
+                        pathLanguageFile = `${__dirname}/ar.lang`;
                 }
                 const readLanguage = fs.readFileSync(pathLanguageFile, "utf-8");
                 const languageData = readLanguage
